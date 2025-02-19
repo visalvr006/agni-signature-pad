@@ -93,6 +93,42 @@
           }
         }
       }
+    },
+    "agni-signature-pad": {
+      "projectType": "library",
+      "root": "projects/agni-signature-pad",
+      "sourceRoot": "projects/agni-signature-pad/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "project": "projects/agni-signature-pad/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/agni-signature-pad/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/agni-signature-pad/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "tsConfig": "projects/agni-signature-pad/tsconfig.spec.json",
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ]
+          }
+        }
+      }
     }
+  },
+  "cli": {
+    "analytics": "e23cfe2c-8e05-4f3f-b2eb-5aaffca837fc"
   }
 }

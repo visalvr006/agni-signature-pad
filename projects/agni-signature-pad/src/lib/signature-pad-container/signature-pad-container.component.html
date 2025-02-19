@@ -1,0 +1,23 @@
+<fieldset>
+  <label class="field_label">{{label}}<span class="mandatory-field" *ngIf="hasRequiredField() && label">
+      *</span></label>
+  <div >
+    <canvas #signatureCanvas class="signature-canvas">
+    </canvas>
+    <p *ngIf="unsaveChangesFound" class="save-changes">
+      <span>*unsaved changes found</span>
+    </p>
+    <div class="actions">
+      <button [disabled]="disabled" *ngIf="!previewEnabled" (click)="clearSignature()">Clear</button>
+      <button [disabled]="disabled" *ngIf="!previewEnabled" (click)="saveSignature()">Save</button>
+    </div>
+  </div>
+</fieldset>
+<ng-container *ngIf="
+  hasSubmitted &&
+  ngControl.invalid &&
+  (ngControl.dirty || !ngControl.touched)
+">
+  <small class="error-message" *ngIf="ngControl.errors?.['required']">{{ label ? label : "This field" }} is
+    required</small>
+</ng-container>
