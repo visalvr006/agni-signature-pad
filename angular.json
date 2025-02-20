@@ -60,10 +60,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "signature-pad:build:production"
+              "buildTarget": "signature-pad:build:production"
             },
             "development": {
-              "browserTarget": "signature-pad:build:development"
+              "buildTarget": "signature-pad:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -71,7 +71,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "signature-pad:build"
+            "buildTarget": "signature-pad:build"
           }
         },
         "test": {

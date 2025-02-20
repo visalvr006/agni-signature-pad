@@ -1,6 +1,6 @@
 # Agni SignaturePad
 
-This library was generated with Angular CLI version 15.2.0.
+This library was generated with Angular CLI version 17.3.12.
 
 ## Attention Please
 
