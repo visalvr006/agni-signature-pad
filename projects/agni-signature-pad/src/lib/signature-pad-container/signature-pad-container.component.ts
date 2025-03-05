@@ -43,22 +43,73 @@ export class SignaturePadContainerComponent implements OnInit, OnChanges, AfterV
   patchSignature() {
     if (this.action === 'EDIT' && this.value) {
       const RESPONSE_DATA: any = this.value;
-      const FILE_DATA: any = RESPONSE_DATA.getAll('file')[0];;
-      if (!FILE_DATA) return;
+
+      // Check if it's already base64 (new way) or FormData (old way)
+      let fileData: string | Blob | null = null;
+
+      if (typeof RESPONSE_DATA === 'string') { // It's base64
+        fileData = RESPONSE_DATA;
+      } else if (RESPONSE_DATA instanceof FormData) { // It's FormData
+        const formDataEntry = RESPONSE_DATA.get('file'); // Get data from formdata
+        if (formDataEntry instanceof Blob) {
+          fileData = formDataEntry;
+        } else if (typeof formDataEntry === 'string') {
+          fileData = formDataEntry; // It's a string (base64)
+        }
+      } else if (RESPONSE_DATA && RESPONSE_DATA.file) { // It's an object with file property
+        fileData = RESPONSE_DATA.file;
+      }
+
+
+      if (!fileData) return; // Exit if no file data
+
+
       const reader = new FileReader();
+
       reader.onload = () => {
         const img = new Image();
         img.onload = () => {
-          this.context.clearRect(0, 0, this.canvas.width, this.canvas.height); // Clear current canvas
-          this.context.drawImage(img, 0, 0, this.canvas.width, this.canvas.height); // Draw image on canvas
-          this.cdRef.detectChanges();
+          this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+          this.context.drawImage(img, 0, 0, this.canvas.width, this.canvas.height);
+          this.cdRef.detectChanges(); // Important!
         };
         img.src = reader.result as string;
       };
-      reader.readAsDataURL(FILE_DATA);
-      this.cdRef.detectChanges();
+
+
+      if (typeof fileData === 'string') { // It's base64, no need for FileReader if string
+        const img = new Image();
+        img.onload = () => {
+          this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+          this.context.drawImage(img, 0, 0, this.canvas.width, this.canvas.height);
+          this.cdRef.detectChanges(); // Important!
+        };
+        img.src = fileData;
+      } else {
+        reader.readAsDataURL(fileData); // If it's a blob, read as data URL
+      }
+
+
+      this.cdRef.detectChanges(); // Important!
     }
   }
+
+  // const FILE_DATA: any = RESPONSE_DATA.getAll('file')[0];;
+  // if (!FILE_DATA) return;
+  // const reader = new FileReader();
+  // reader.onload = () => {
+  //   const img = new Image();
+  //   img.onload = () => {
+  //     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height); // Clear current canvas
+  //     this.context.drawImage(img, 0, 0, this.canvas.width, this.canvas.height); // Draw image on canvas
+  //     this.cdRef.detectChanges();
+  //   };
+  //   img.src = reader.result as string;
+  // };
+  // reader.readAsDataURL(FILE_DATA);
+  // this.cdRef.detectChanges();
+  //   }
+  // }
 
   // trustImageUrl(imageUrl: any){
   //   return this.sanitizer.bypassSecurityTrustUrl(imageUrl);
@@ -155,22 +206,22 @@ export class SignaturePadContainerComponent implements OnInit, OnChanges, AfterV
     else {
       this.unsaveChangesFound = false;
     }
+    this.onChange('');
     this.cdRef.detectChanges();
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
   }
 
   saveSignature(): void {
     this.unsaveChangesFound = false;
-    this.cdRef.detectChanges();
+    this.canvas.baseURI
     this.canvas.toBlob((blob) => {
       if (blob) {
-        const file = new File([blob], 'signature-image.png', { type: 'image/png' });
         const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => {
-          const formData = new FormData();
-          formData.append('file', file, file.name);
-          this.onChange(formData);
+        reader.readAsDataURL(blob);
+        reader.onloadend = () => {
+          const base64String = reader.result as string;
+          this.onChange(base64String);
+          this.cdRef.detectChanges();
         };
       }
     }, 'image/png');

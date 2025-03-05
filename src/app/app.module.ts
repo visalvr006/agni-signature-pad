@@ -4,7 +4,8 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ReactiveFormsModule } from '@angular/forms';
-import { AgniSignaturePadModule } from 'agni-signature-pad';
+import { AgniSignaturePadModule } from 'projects/agni-signature-pad/src/public-api';
+
 
 @NgModule({
   declarations: [

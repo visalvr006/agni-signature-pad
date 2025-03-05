@@ -1,3 +1,7 @@
+# Agni SignaturePad
+
+This library was generated with Angular CLI version 15.0.5.
+
 # Attention Please
 
 This library is under development, please don't use it in projects that is going to production in near feature. The completed version will be released by the end of March 2025.
